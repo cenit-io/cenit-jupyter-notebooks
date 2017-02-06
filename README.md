@@ -5,15 +5,33 @@ heroku or CloudFoundry.
 
 ## Installation instructions
 
+### Local installation
+
+```
+$ pip3 install notebook ipywidgets requests iso8601
+
+$ gem install cztop
+$ gem install iruby
+
+$ git clone https://github.com/cenit-io/cenit-jupyter-notebooks.git
+$ cd cenit-jupyter-notebooks
+$ cp -ax .jupyter ~/
+
+$ iruby notebook --debug
+```
+
 ### heroku - manual deployment
 
 Push this repository to your app or fork this repository on github and link your
 repository to your heroku app.
 
-Use the [heroku-buildpack-conda](https://github.com/pl31/heroku-buildpack-conda):
 ```
-$ heroku buildpacks:set https://github.com/pl31/heroku-buildpack-conda.git -a <your_app>
-$ heroku buildpacks:set https://github.com/pl31/heroku-buildpack-ruby.git -a <your_app>
+$ git clone https://github.com/cenit-io/cenit-jupyter-notebooks.git
+$ cd cenit-jupyter-notebooks
+
+$ heroku apps:create <your_app>
+$ heroku buildpacks:set https://github.com/pl31/heroku-buildpack-conda.git 
+$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby.git
 ```
 
 ### Environment variable
@@ -24,17 +42,8 @@ $ heroku config:set CENITIO_API_BASE_URL='http://cenit.io/api/v2' -a <your_app>
 
 ## Environment variables
 
-- `CENITIO_API_BASE_URL`: Set Cenit-IO API base url.
-- `JUPYTER_NOTEBOOK_ARGS`: Additional command line args passed to
+- `CENITIO_API_BASE_URL`: **(Used in Jupyter App)** Set Cenit-IO API base url.
+- `JUPYTER_NOTEBOOK_ARGS`: **(Used in Jupyter App)** Additional command line args passed to
   `jupyter notebook`; e.g. get a more verbose logging using `--debug`
+- `JUPYTER_NOTEBOOKS_URL`: **(Used in Cenit-IO App)** Set jupyter app url.
 
-## Python version
-
-If you want to use a special python version, you should set it in your environment.yml:
-
-```
-name: root
-dependencies:
-  - python=2.7
-  - ...
-```
