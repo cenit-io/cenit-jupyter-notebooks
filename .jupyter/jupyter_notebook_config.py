@@ -11,6 +11,8 @@ try:
 
   c = get_config()
 
+  cenitio_base_url = os.getenv('CENITIO_BASE_URL', 'http://127.0.0.1:3000').strip('/')
+
   ### Password protection ###
   # http://jupyter-notebook.readthedocs.io/en/latest/security.html
   c.NotebookApp.token = ''
@@ -31,7 +33,23 @@ try:
   c.NotebookApp.contents_manager_class = 'cenitionotebook.services.contents.manager.ApiContentsManager'
 
   ### The cenit-io api base url.
-  c.ApiContentsManager.cenitio_api_base_url = os.getenv('CENITIO_API_BASE_URL', 'http://127.0.0.1:3000/api/v2')
+  c.ApiContentsManager.cenitio_api_base_url = "{}/api/v2".format(cenitio_base_url)
+
+  ### Extra paths to search for serving jinja templates.
+  c.NotebookApp.extra_template_paths = [
+    os.path.join(config_path, 'custom', 'templates')
+  ]
+
+  ### Whether to enable MathJax for typesetting math/TeX
+  c.NotebookApp.enable_mathjax = False
+
+  ### Disable cross-site-request-forgery protection
+  c.NotebookApp.disable_check_xsrf = True
+
+  c.NotebookApp.tornado_settings = {
+    'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
+  }
+
 
 except Exception:
   traceback.print_exc()
