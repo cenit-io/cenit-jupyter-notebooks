@@ -4,3 +4,5 @@ dependencies:
   - ipywidgets
   - requests
   - iso8601
+  - pip:
+    - git+git://github.com/ipython-contrib/jupyter_contrib_nbextensions.git
