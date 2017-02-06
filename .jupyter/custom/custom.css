@@ -1,0 +1,28 @@
+#ipython-main-app {
+    width: 100%;
+    padding-right: 1ex;
+}
+
+#notebook_list div.list_item:nth-child(2) {
+    display: none;
+}
+
+.list_item:nth-child(0) {
+    font-size: 30px;
+}
+
+#tree-selector {
+    float: left;
+}
+
+#tree-selector .btn {
+    height: 2em;
+}
+
+.dynamic-instructions {
+    padding: 0;
+}
+
+.dynamic-buttons {
+    padding: 0;
+}

@@ -1,4 +1,5 @@
 from notebook.services.contents.manager import ContentsManager
+from nbformat.v4 import new_notebook
 from .checkpoints import Checkpoints
 from .cenitio import CenitIO
 from tornado import web
@@ -29,8 +30,8 @@ class ApiContentsManager(ContentsManager, CenitIO):
         raise web.HTTPError(404, u'Invalid module path: %s' % path)
 
       model = {}
-      model['name'] = module
-      model['path'] = '/'
+      model['name'] = ''
+      model['path'] = ''
       model['last_modified'] = datetime.datetime.now()
       model['created'] = datetime.datetime.now()
       model['format'] = 'json'
@@ -93,6 +94,19 @@ class ApiContentsManager(ContentsManager, CenitIO):
     #################################################
     # Assuming that all files or directories are visible.
     return False
+
+  def new(self, model=None, path=''):
+    path = re.sub(r'.ipynb$', '', path.strip('/'))
+
+    if model is None: model = {}
+
+    model.setdefault('type', 'notebook')
+    model['content'] = new_notebook()
+    model['format'] = 'json'
+
+    model = self.save(model, path, True)
+
+    return model
 
   def copy(self, from_path, to_path=None):
     model = self.get(from_path)

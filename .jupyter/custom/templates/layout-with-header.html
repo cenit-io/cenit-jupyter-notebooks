@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block header %}
+<div id="header">
+  <div id="header-container" class="container">
+  <div id="ipython_notebook" class="nav navbar-brand pull-left">
+    <a href="{{default_url}}" title='dashboard'>
+      {% block logo %}<img src='{{static_url("base/images/logo.png") }}' alt='Jupyter Notebook'/>{% endblock %}
+    </a>
+  </div>
+
+  {% block headercontainer %}
+  {% endblock %}
+  </div>
+  <div class="header-bar"></div>
+
+  {% block header_menu %}
+  {% endblock %}
+</div>
+{% endblock %}
