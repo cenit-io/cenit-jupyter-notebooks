@@ -48,7 +48,7 @@ class CenitIO:
     path = path.strip('/')
 
     try:
-      (key, token, module) = path.split('/')
+      (key, token, module) = path.split('/', 2)
     except:
       raise web.HTTPError(404, u'Invalid module path: %s' % path)
 
@@ -131,7 +131,8 @@ class CenitIO:
 
   def parse_notebook_path(self, path):
     try:
-      (key, token, module, name) = path.split('/')
+      (key, token, module) = path.split('/', 2)
+      (module, name) = module.rsplit('/', 1)
     except:
       raise web.HTTPError(404, u'Invalid notebook path: %s' % path)
 

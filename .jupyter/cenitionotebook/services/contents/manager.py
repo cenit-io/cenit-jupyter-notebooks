@@ -25,7 +25,7 @@ class ApiContentsManager(ContentsManager, CenitIO):
 
     if type == 'directory':
       try:
-        (key, token, module) = path.split('/')
+        (key, token, module) = path.split('/', 2)
       except:
         raise web.HTTPError(404, u'Invalid module path: %s' % path)
 
@@ -79,12 +79,13 @@ class ApiContentsManager(ContentsManager, CenitIO):
   def dir_exists(self, path):
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s' % (path))
     #################################################
-    # Assuming that all directories exist only if have level 3.
     path = path.strip('/')
-    if len(path.split('/')) != 3:
+
+    if re.match(r'.*\.ipynb$', path):
       result = False
     else:
-      result = True
+      # Assuming that all directories exist only if have level 3 or more.
+      result = len(path.split('/')) > 2
 
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s [%s]' % (path, result))
     return result
@@ -96,7 +97,7 @@ class ApiContentsManager(ContentsManager, CenitIO):
     return False
 
   def new(self, model=None, path=''):
-    path = re.sub(r'.ipynb$', '', path.strip('/'))
+    path = path.strip('/')
 
     if model is None: model = {}
 
@@ -112,12 +113,12 @@ class ApiContentsManager(ContentsManager, CenitIO):
     model = self.get(from_path)
     if model == None: raise web.HTTPError(404, u'Notebook not found in path: %s' % from_path)
 
-    path = from_path.strip('/')
+    path = re.sub(r'.ipynb$', '', from_path.strip('/'))
     from_dir, from_name = path.rsplit('/', 1)
     to_path = to_path or from_dir
 
     for i in itertools.count():
-      to_name = re.sub(r'-0$', '', '%s-copy-%s' % (from_name, i))
+      to_name = re.sub(r'-0$', '', '%s-copy-%s.ipynb' % (from_name, i))
       if not self.file_exists('%s/%s' % (to_path, to_name)): break
 
     to_path = '%s/%s' % (to_path, to_name)
