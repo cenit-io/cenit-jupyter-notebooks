@@ -50,6 +50,9 @@ try:
     'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
   }
 
+  ### The base name used when creating untitled notebooks.
+  c.ContentsManager.untitled_notebook = 'untitled-notebook'
+
 
 except Exception:
   traceback.print_exc()
