@@ -81,17 +81,15 @@ class CenitIO:
 
     (key, token, module, name) = self.parse_notebook_path(path)
 
-    nb = nbformat.from_dict(model['content'])
+    content = model.get('content', None)
+    shared = model.get('shared', None)
+
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {
-      'name': name,
-      'module': module,
-      'content': nbformat.writes(nb, NBFORMAT_VERSION)
-    }
+    params = {'name': name, 'module': module}
 
-    if not create:
-      params['id'] = model.get('id') or self.cenit_io_get(path).get('id')
-
+    if None != content: params['content'] = nbformat.writes(nbformat.from_dict(content), NBFORMAT_VERSION)
+    if None != shared:  params['shared'] = shared
+    if not create: params['id'] = model.get('id') or self.cenit_io_get(path).get('id')
     data = self.cenit_io_send_request(uri, key, token, params, 'POST')
 
     return self.parse(key, token, data['success']['notebook'])
@@ -117,8 +115,9 @@ class CenitIO:
     model['last_modified'] = updated_at
     model['created'] = created_at
     model['mimetype'] = None
-    model['writable'] = True
+    model['writable'] = notebook.get('writable', False)
     model['type'] = 'notebook'
+    model['shared'] = notebook.get('shared', False)
 
     if content:
       model['format'] = 'json'

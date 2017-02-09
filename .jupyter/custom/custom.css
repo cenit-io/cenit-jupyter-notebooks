@@ -26,3 +26,47 @@
 .dynamic-buttons {
     padding: 0;
 }
+
+.shared-button {
+    display: none;
+}
+
+.shared a:before {
+    content: '';
+}
+
+.item_icon {
+    margin-left: 0px;
+    opacity: 0.3;
+}
+
+.item_icon:before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    top: -1px;
+}
+
+.shared_icon:before {
+    content: "\f1e0";
+}
+
+.notebook_icon:before,
+.running_notebook_icon:before {
+    content: "\f040";
+}
+
+.running a,
+.running .item_icon:before {
+    color: #5cb85c;
+}
+
+.writable .notebook_icon,
+.writable .running_notebook_icon,
+.shared .shared_icon {
+    opacity: 1;
+}
