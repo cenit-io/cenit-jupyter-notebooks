@@ -34,7 +34,8 @@ define(function (require, exports, module) {
         this.parent_selection_changed();
 
         var that = this,
-            checked = 0;
+            checked = 0,
+            has_not_writable = false;
 
         $('.list_item :checked').each(function (index, item) {
             var parent = $(item).parent().parent(),
@@ -45,20 +46,32 @@ define(function (require, exports, module) {
             // Breadcrumbs path == ''.
             if (parent.find('.upload_button').length === 0 && parent.data('path') !== '' && parent.data('path') !== utils.url_path_split(that.notebook_path)[0]) {
                 checked++;
-                that.selected[index] = parent.data()
+                that.selected[index] = parent.data();
+                has_not_writable = has_not_writable || !that.selected[index].writable
             }
         });
 
         // Shared is only visible when one item is selected.
-        if (checked > 0) {
+        if (checked > 0 && !has_not_writable) {
             $('.shared-button').css('display', 'inline-block');
         } else {
             $('.shared-button').css('display', 'none');
         }
+
+        // Rename is only visible when one item is selected, it is not a running notebook and writable.
+        if (checked === 1 && !this.is_running(this.selected[0]) && !has_not_writable) {
+            $('.rename-button').css('display', 'inline-block');
+        } else {
+            $('.rename-button').css('display', 'none');
+        }
+    };
+
+    NotebookList.prototype.is_running = function (model) {
+        (model.type === 'notebook' && this.sessions[model.path] !== undefined)
     };
 
     NotebookList.prototype.add_link = function (model, item) {
-        var running = (model.type === 'notebook' && this.sessions[model.path] !== undefined);
+        var running = this.is_running(model);
 
         this.parent_add_link(model, item);
         item.data('id', model.id);
