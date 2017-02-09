@@ -20,8 +20,7 @@ define(function (require, exports, module) {
             if (item.type === 'notebook') {
                 that.contents.save(item.path, {
                     id: item.id,
-                    shared: !item.shared,
-                    content: False
+                    shared: !item.shared
                 }).then(function () {
                     that.session_list.load_sessions();
                 })
