@@ -2,16 +2,20 @@ define(function (require, exports, module) {
     "use strict";
 
     var $ = require('jqueryui'),
+        IPython = require('base/js/namespace'),
         utils = require('base/js/utils'),
         NotebookList = require('tree/js/notebooklist').NotebookList;
 
+    Jupyter._target = '_self';
+
     NotebookList.prototype.parent_selection_changed = NotebookList.prototype._selection_changed;
     NotebookList.prototype.parent_add_link = NotebookList.prototype.add_link;
+    NotebookList.prototype.parent_bind_events = NotebookList.prototype.bind_events;
 
-    NotebookList.prototype.connect_custom_events = function () {
-        NotebookList._custom_events = true;
+    NotebookList.prototype.bind_events = function () {
+        this.parent_bind_events();
         // Bind events for action buttons.
-        $('.shared-button').click($.proxy(this.toggle_shared_selected, this));
+        $('.shared-button').off('click').on('click', $.proxy(this.toggle_shared_selected, this));
     };
 
     NotebookList.prototype.toggle_shared_selected = function () {
@@ -29,8 +33,6 @@ define(function (require, exports, module) {
     };
 
     NotebookList.prototype._selection_changed = function () {
-        if (!NotebookList._custom_events) this.connect_custom_events();
-
         this.parent_selection_changed();
 
         var that = this,
@@ -67,7 +69,7 @@ define(function (require, exports, module) {
     };
 
     NotebookList.prototype.is_running = function (model) {
-        (model.type === 'notebook' && this.sessions[model.path] !== undefined)
+        return (model.type === 'notebook' && this.sessions[model.path] !== undefined)
     };
 
     NotebookList.prototype.add_link = function (model, item) {
@@ -84,6 +86,4 @@ define(function (require, exports, module) {
 
         $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
     };
-
-    return {'NotebookList': NotebookList};
 });
