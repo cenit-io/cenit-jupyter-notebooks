@@ -86,4 +86,21 @@ define(function (require, exports, module) {
 
         $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
     };
+
+
+    $([IPython.events]).on('notebook_loaded.Notebook', function () {
+        /* add toolbar buttons */
+        IPython.toolbar.add_buttons_group([
+            {
+                id: 'close',
+                label: 'Close this notebook and goto notebooks list',
+                icon: 'fa-close',
+                callback: function () {
+                    var parent = utils.url_path_split(IPython.notebook.notebook_path)[0],
+                        url = utils.url_path_join(IPython.notebook.base_url, 'tree', utils.encode_uri_components(parent));
+                    window.open(url, IPython._target);
+                }
+            }
+        ]);
+    });
 });
