@@ -262,11 +262,6 @@ data-notebook-path="{{notebook_path | urlencode}}"
               </ul>
             </li>
           </ul>
-          <span id="save_widget" class="pull-left save_widget">
-              <span id="notebook_name" class="filename"></span>
-              <span class="checkpoint_status"></span>
-              <span class="autosave_status"></span>
-          </span>
         </div>
       </div>
     </div>
@@ -274,7 +269,13 @@ data-notebook-path="{{notebook_path | urlencode}}"
 
   <div id="maintoolbar" class="navbar">
     <div class="toolbar-inner navbar-inner navbar-nobg">
-      <div id="maintoolbar-container" class="container"></div>
+      <div id="maintoolbar-container" class="container">
+        <span id="save_widget" class="pull-right save_widget">
+          <span id="notebook_name" class="filename"></span>
+          <span class="checkpoint_status"></span>
+          <span class="autosave_status"></span>
+        </span>
+      </div>
     </div>
   </div>
 </div>

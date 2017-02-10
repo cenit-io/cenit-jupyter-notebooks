@@ -70,3 +70,20 @@
 .shared .shared_icon {
     opacity: 1;
 }
+
+.container {
+    width: 100%;
+}
+
+#notebook-container {
+    margin-left: 0.5em;
+    width: calc(100% - 1em);
+}
+
+span.save_widget {
+    margin-top: 3px;
+}
+
+span.save_widget span.filename {
+    font-size: small;
+}
