@@ -3,11 +3,23 @@ define(function (require, exports, module) {
 
     var $ = require('jqueryui'),
         IPython = require('base/js/namespace'),
-        utils = require('base/js/utils');
+        utils = require('base/js/utils'),
+
+        kill_and_exit = function () {
+            var close = function () {
+                var parent = utils.url_path_split(IPython.notebook.notebook_path)[0],
+                    url = utils.url_path_join(IPython.notebook.base_url, 'tree', utils.encode_uri_components(parent));
+
+                window.open(url, IPython._target);
+            };
+
+            // finish with close on success or failure
+            IPython.notebook.session.delete(close, close);
+        };
 
     Jupyter._target = '_self';
 
-    /** Extends NotebookList class. */
+    /** Extending NotebookList class. */
     {
         var NotebookList = require('tree/js/notebooklist').NotebookList;
 
@@ -91,7 +103,7 @@ define(function (require, exports, module) {
         };
     }
 
-    /** Extends Notebook class. */
+    /** Extending Notebook class. */
     {
         var SaveWidget = require('notebook/js/savewidget').SaveWidget;
 
@@ -108,8 +120,19 @@ define(function (require, exports, module) {
         }
     }
 
+    /** Extending MenuBar class. */
+    {
+        var MenuBar = require('notebook/js/menubar').MenuBar;
 
-    /** Add new actions. */
+        MenuBar.prototype.parent_bind_events = MenuBar.prototype.bind_events;
+
+        MenuBar.prototype.bind_events = function () {
+            this.parent_bind_events();
+            this.element.find('#kill_and_exit').off('click').on('click', kill_and_exit);
+        };
+    }
+
+    /** Extending notebook actions. */
     $([IPython.events]).on('notebook_loaded.Notebook', function () {
         /* Add toolbar buttons */
         IPython.toolbar.add_buttons_group([
@@ -117,11 +140,7 @@ define(function (require, exports, module) {
                 id: 'close',
                 label: 'Close this notebook and goto notebooks list',
                 icon: 'fa-close',
-                callback: function () {
-                    var parent = utils.url_path_split(IPython.notebook.notebook_path)[0],
-                        url = utils.url_path_join(IPython.notebook.base_url, 'tree', utils.encode_uri_components(parent));
-                    window.open(url, IPython._target);
-                }
+                callback: kill_and_exit
             }
         ]);
     });

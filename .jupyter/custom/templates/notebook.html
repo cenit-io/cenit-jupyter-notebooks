@@ -64,12 +64,11 @@ data-notebook-path="{{notebook_path | urlencode}}"
                   <a href="#">New Notebook</a>
                   <ul class="dropdown-menu" id="menu-new-notebook-submenu"></ul>
                 </li>
-                <li id="open_notebook" title="Close this notebook and goto notebooks list">
-                  <a href="#">Close</a></li>
                 <!-- <hr/> -->
                 <li class="divider"></li>
                 <li id="copy_notebook" title="Open a copy of this notebook's contents and start a new kernel">
-                  <a href="#">Make a Copy...</a></li>
+                  <a href="#">Make a Copy</a>
+                </li>
                 <li id="rename_notebook"><a href="#">Rename</a></li>
                 <li id="save_checkpoint"><a href="#">Save</a></li>
                 <!-- <hr/> -->
@@ -86,13 +85,11 @@ data-notebook-path="{{notebook_path | urlencode}}"
                   </ul>
                 </li>
                 <li class="divider"></li>
-                <li id="trust_notebook"
-                    title="Trust the output of this notebook">
+                <li id="trust_notebook" title="Trust the output of this notebook">
                   <a href="#">Trust Notebook</a></li>
                 <li class="divider"></li>
-                <li id="kill_and_exit"
-                    title="Shutdown this notebook's kernel, and close this window">
-                  <a href="#">Close and Halt</a></li>
+                <li id="kill_and_exit" title="Shutdown this notebook's kernel, and close this notebook and goto notebooks list">
+                  <a href="#">Close</a></li>
               </ul>
             </li>
             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Edit</a>
