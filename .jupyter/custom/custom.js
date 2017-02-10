@@ -26,6 +26,7 @@ define(function (require, exports, module) {
         NotebookList.prototype.parent_selection_changed = NotebookList.prototype._selection_changed;
         NotebookList.prototype.parent_add_link = NotebookList.prototype.add_link;
         NotebookList.prototype.parent_bind_events = NotebookList.prototype.bind_events;
+        NotebookList.prototype.parent_new_item = NotebookList.prototype.new_item;
 
         NotebookList.prototype.bind_events = function () {
             this.parent_bind_events();
@@ -95,9 +96,9 @@ define(function (require, exports, module) {
             item.data('shared', model.shared);
             item.data('writable', model.writable);
 
-            if (running) item.addClass('running');
-            if (model.shared) item.addClass('shared');
-            if (model.writable) item.addClass('writable');
+            item.addClass(running ? 'running' : 'stopped');
+            item.addClass(model.shared ? 'shared' : 'private');
+            item.addClass(model.writable ? 'writable' : 'read-only');
 
             $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
         };
