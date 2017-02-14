@@ -25,13 +25,14 @@ class ApiContentsManager(ContentsManager, CenitIO):
 
     if type == 'directory':
       try:
-        (key, token, module) = path.split('/', 2)
+        key, token, module = ('%s/' % (path)).split('/', 2)
+        module = module.strip('/')
       except:
         raise web.HTTPError(404, u'Invalid module path: %s' % path)
 
       model = {}
-      model['name'] = ''
-      model['path'] = ''
+      model['name'] = module
+      model['path'] = module
       model['last_modified'] = datetime.datetime.now()
       model['created'] = datetime.datetime.now()
       model['format'] = 'json'
@@ -84,8 +85,8 @@ class ApiContentsManager(ContentsManager, CenitIO):
     if re.match(r'.*\.ipynb$', path):
       result = False
     else:
-      # Assuming that all directories exist only if have level 3 or more.
-      result = len(path.split('/')) > 2
+      # Assuming that all directories exist.
+      result = len(path.split('/')) >= 2
 
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s [%s]' % (path, result))
     return result

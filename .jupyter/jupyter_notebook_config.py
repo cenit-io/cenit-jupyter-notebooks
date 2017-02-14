@@ -35,6 +35,9 @@ try:
   ### The cenit-io api base url.
   c.ApiContentsManager.cenitio_api_base_url = "{}/api/v2".format(cenitio_base_url)
 
+  ### The default URL to redirect to from `/`
+  c.NotebookApp.default_url = '/tree/-/-/notebook'
+
   ### Extra paths to search for serving jinja templates.
   c.NotebookApp.extra_template_paths = [
     os.path.join(config_path, 'custom', 'templates')

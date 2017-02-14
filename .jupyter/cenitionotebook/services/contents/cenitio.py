@@ -21,13 +21,11 @@ class CenitIO:
   def cenit_io_send_request(self, uri, key, token, params={}, method='GET'):
     try:
       options = {
-        'headers': {
-          'Content-Type': 'application/json',
-          'X-User-Access-Key': key,
-          'X-User-Access-Token': token
-        },
+        'headers': {'Content-Type': 'application/json'},
         'data': json.dumps(params)
       }
+      if key != '-': options['headers']['X-User-Access-Key'] = key
+      if token != '-': options['headers']['X-User-Access-Token'] = token
 
       session = Session()
       request = Request(method, uri, **options)
@@ -48,19 +46,40 @@ class CenitIO:
     path = path.strip('/')
 
     try:
-      (key, token, module) = path.split('/', 2)
+      key, token, module = ('%s/' % (path)).split('/', 2)
+      module = module.strip('/')
     except:
       raise web.HTTPError(404, u'Invalid module path: %s' % path)
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {'page': 1, 'limit': 100, 'order': 'name', 'module': module}
+    params = {'limit': 10000}
+
+    self.log.debug('MODULE: [%s]' % (module))
+
+    if module == '':
+      params['order'] = 'module'
+      params['only'] = 'module'
+    else:
+      params['order'] = 'name'
+      params['module'] = module
+      params['only'] = 'module,name,writable,shared,created_at,updated_at'
 
     data = self.cenit_io_send_request(uri, key, token, params)
 
-    for (i, notebook) in enumerate(data['notebooks']):
-      data['notebooks'][i] = self.parse(key, token, notebook)
+    if module != '':
+      notebooks = data['notebooks']
+    else:
+      exists = {}
+      notebooks = []
+      for (i, notebook) in enumerate(data['notebooks']):
+        if not exists.get(notebook['module'], False):
+          notebooks.append(notebook)
+          exists[notebook['module']] = True
 
-    return data['notebooks']
+    for (i, notebook) in enumerate(notebooks):
+      notebooks[i] = self.parse(key, token, notebook)
+
+    return notebooks
 
   def cenit_io_get(self, path, content=True):
     path = path.strip('/')
@@ -104,20 +123,30 @@ class CenitIO:
     now = datetime.now()
     created_at = notebook.get('created_at', now)
     updated_at = notebook.get('updated_at', now)
+    name = notebook.get('name', None)
+    module = notebook.get('module', None)
 
     if type(created_at) == str:  created_at = iso8601.parse_date(created_at)
     if type(updated_at) == str:  updated_at = iso8601.parse_date(updated_at)
 
     model = {}
     model['id'] = notebook.get('id')
-    model['name'] = '%s' % (notebook.get('name'))
-    model['path'] = '%s/%s/%s/%s' % (key, token, notebook.get('module'), notebook.get('name'))
     model['last_modified'] = updated_at
     model['created'] = created_at
     model['mimetype'] = None
-    model['writable'] = notebook.get('writable', False)
-    model['type'] = 'notebook'
-    model['shared'] = notebook.get('shared', False)
+
+    if name:
+      model['name'] = name
+      model['path'] = '%s/%s/%s/%s' % (key, token, module, name)
+      model['writable'] = notebook.get('writable', False)
+      model['type'] = 'notebook'
+      model['shared'] = notebook.get('shared', False)
+    else:
+      model['name'] = module
+      model['path'] = '%s/%s/%s' % (key, token, module)
+      model['writable'] = False
+      model['type'] = 'directory'
+      model['shared'] = False
 
     if content:
       model['format'] = 'json'

@@ -3,6 +3,7 @@ define(function (require, exports, module) {
 
     var $ = require('jqueryui'),
         IPython = require('base/js/namespace'),
+        events = require('base/js/events'),
         utils = require('base/js/utils'),
 
         kill_and_exit = function () {
@@ -95,13 +96,77 @@ define(function (require, exports, module) {
             item.data('id', model.id);
             item.data('shared', model.shared);
             item.data('writable', model.writable);
+            item.data('notebook_path', model.writable);
+
+            item.find(".item_name").text(model.name.replace(/\.ipynb/, ''));
 
             item.addClass(running ? 'running' : 'stopped');
+            item.addClass(model.type);
             item.addClass(model.shared ? 'shared' : 'private');
             item.addClass(model.writable ? 'writable' : 'read-only');
 
             $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
         };
+
+        NotebookList.prototype.draw_notebook_list = function (list, error_msg) {
+            // Remember what was selected before the refresh.
+            var selected_before = this.selected;
+
+            this.clear_list();
+
+            var message = error_msg || 'Notebook list empty.',
+                item = null,
+                model = null,
+                len = list.content.length,
+                n_uploads = this.element.children('.list_item').length;
+
+            if (len === 0) {
+                item = this.new_item(0);
+                var span12 = item.children().first();
+                span12.empty();
+                span12.append($('<div style="margin:auto;text-align:center;color:grey"/>').text(message));
+            }
+
+            var path = this.notebook_path,
+                offset = n_uploads, m;
+
+            if (path !== '' && (m = path.match(/^([^\/]+\/[^\/]+)\//))) {
+                item = this.new_item(offset, false);
+                model = {
+                    type: 'directory',
+                    name: '..',
+                    path: m[1],
+                };
+                this.add_link(model, item);
+                offset += 1;
+            }
+            for (var i = 0; i < len; i++) {
+                model = list.content[i];
+                item = this.new_item(i + offset, model['type'] != 'directory');
+                try {
+                    this.add_link(model, item);
+                } catch (err) {
+                    console.log('Error adding link: ' + err);
+                }
+            }
+            // Trigger an event when we've finished drawing the notebook list.
+            events.trigger('draw_notebook_list.NotebookList');
+
+            // Reselect the items that were selected before.  Notify listeners
+            // that the selected items may have changed.  O(n^2) operation.
+            selected_before.forEach(function (item) {
+                var list_items = $('.list_item');
+                for (var i = 0; i < list_items.length; i++) {
+                    var $list_item = $(list_items[i]);
+                    if ($list_item.data('path') === item.path) {
+                        $list_item.find('input[type=checkbox]').prop('checked', true);
+                        break;
+                    }
+                }
+            });
+            this._selection_changed();
+        };
+
     }
 
     /** Extending Notebook class. */
@@ -117,7 +182,7 @@ define(function (require, exports, module) {
                 return Promise.reject(error);
             }
 
-            this.rename_notebook(options);
+            this.parent_rename_notebook(options);
         }
     }
 
