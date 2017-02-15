@@ -59,12 +59,18 @@ class ApiContentsManager(ContentsManager, CenitIO):
     #################################################
     self.cenit_io_delete(path)
 
-  def rename_file(self, old_path, path):
+  def rename_file(self, old_path, new_path):
     self.log.debug('RENAMING OLD FILE: %s' % (old_path))
-    self.log.debug('RENAMING NEW FILE: %s' % (path))
+    self.log.debug('RENAMING NEW FILE: %s' % (new_path))
     #################################################
+    if new_path == old_path:return
+
+    # Should we proceed with the move?
+    if self.file_exists(new_path):
+      raise web.HTTPError(409, u'File already exists: %s' % new_path.split('/',2)[2])
+
     model = self.cenit_io_get(old_path)
-    self.cenit_io_save(path, model)
+    self.cenit_io_save(new_path, model)
 
   def file_exists(self, path):
     self.log.debug('CHECKING FILE EXISTENCE: %s' % (path))
