@@ -15,32 +15,18 @@ data-notebook-path="{{notebook_path | urlencode}}"
       <div id="notebooks" class="tab-pane active">
           <div id="notebook_list">
             <div id="notebook_list_header" class="row list_header">
-              {% if breadcrumbs[3] %}
-              <div class="pull-left btn-group dropdown" id="tree-selector">
-                <button title="Select All / None" type="button" class="btn btn-default btn-xs" id="button-select-all">
-                  <input type="checkbox" class="pull-left tree-selector" id="select-all"><span id="counter-select-all">&nbsp;</span></input>
-                </button>
-                <button title="Select..." class="btn btn-default btn-xs dropdown-toggle" type="button" id="tree-selector-btn" data-toggle="dropdown" aria-expanded="true">
-                  <span class="caret"></span>
-                  <span class="sr-only">Toggle Dropdown</span>
-                </button>
-                <ul id='selector-menu' class="dropdown-menu" role="menu" aria-labelledby="tree-selector-btn">
-                  <li role="presentation"><a id="select-notebooks" role="menuitem" tabindex="-1" href="#" title="Select All Notebooks"><i class="menu_icon notebook_icon icon-fixed-width"></i> All Notebooks</a></li>
-                  <li role="presentation"><a id="select-running-notebooks" role="menuitem" tabindex="-1" href="#" title="Select Running Notebooks"><i class="menu_icon running_notebook_icon icon-fixed-width"></i> Running</a></li>
-                </ul>
-              </div>
               <div id="project_name" class="pull-left">
                 <ul class="breadcrumb">
                   <li><a href="{{breadcrumbs[2][0]}}"><i class="fa fa-home"></i></a></li>
+                {% if breadcrumbs[3] %}
                 {% for crumb in breadcrumbs[3:] %}
                   <li>{{crumb[1]}}</li>
                 {% endfor %}
+                {% endif %}
                 </ul>
               </div>
+              {% if breadcrumbs[3] %}
               <div class="pull-left">
-                <div class="dynamic-instructions">
-                  Select items to perform actions on them.
-                </div>
                 <div class="dynamic-buttons">
                   <button title="Duplicate selected" class="duplicate-button btn btn-default btn-xs">Duplicate</button>
                   <button title="Rename selected" class="rename-button btn btn-default btn-xs">Rename</button>
@@ -52,7 +38,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
               {% endif %}
               <div class="pull-right">
                 {% if breadcrumbs[3] %}
-                <div id="new-buttons" class="btn-group">
+                <div id="new-buttons" class="btn-group new-buttons">
                   <button class="dropdown-toggle btn btn-default btn-xs" data-toggle="dropdown">
                     <span>New</span>
                     <span class="caret"></span>

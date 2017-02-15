@@ -3,6 +3,7 @@
     padding-right: 1ex;
 }
 
+.new-buttons,
 #notebook_list div.list_item:nth-child(2) {
     display: none;
 }
@@ -96,6 +97,10 @@ span.save_widget span.filename {
     font-size: small;
 }
 
+.breadcrumb {
+    padding-left: 16px !important;
+}
+
 .breadcrumb > li {
     display: inline-block;
 }
@@ -110,14 +115,4 @@ span.save_widget span.filename {
     content: "\f101";
     padding: 0 3px;
     color: #5e5e5e;
-}
-
-.breadcrumb:after {
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-
-    content: "\f101";
 }
