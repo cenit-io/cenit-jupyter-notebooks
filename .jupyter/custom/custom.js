@@ -54,7 +54,8 @@ define(function (require, exports, module) {
 
             var that = this,
                 checked = 0,
-                has_not_writable = false;
+                has_read_only = false,
+                has_directories = false;
 
             $('.list_item :checked').each(function (index, item) {
                 var parent = $(item).parent().parent(),
@@ -66,22 +67,30 @@ define(function (require, exports, module) {
                 if (parent.find('.upload_button').length === 0 && parent.data('path') !== '' && parent.data('path') !== utils.url_path_split(that.notebook_path)[0]) {
                     checked++;
                     that.selected[index] = parent.data();
-                    has_not_writable = has_not_writable || !that.selected[index].writable
+                    has_read_only = has_read_only || !that.selected[index].writable;
+                    has_directories = has_directories || (that.selected[index].type == 'directory');
                 }
             });
 
             // Shared is only visible when one item is selected.
-            if (checked > 0 && !has_not_writable) {
+            if (checked > 0 && !has_read_only) {
                 $('.shared-button').css('display', 'inline-block');
             } else {
                 $('.shared-button').css('display', 'none');
             }
 
             // Rename is only visible when one item is selected, it is not a running notebook and writable.
-            if (checked === 1 && !this.is_running(this.selected[0]) && !has_not_writable) {
+            if (checked === 1 && !this.is_running(this.selected[0]) && !has_read_only) {
                 $('.rename-button').css('display', 'inline-block');
             } else {
                 $('.rename-button').css('display', 'none');
+            }
+
+            // Delete is visible if one or more items are selected.
+            if (checked > 0 && !has_read_only && !has_directories) {
+                $('.delete-button').css('display', 'inline-block');
+            } else {
+                $('.delete-button').css('display', 'none');
             }
         };
 
@@ -107,66 +116,6 @@ define(function (require, exports, module) {
 
             $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
         };
-
-        NotebookList.prototype.draw_notebook_list = function (list, error_msg) {
-            // Remember what was selected before the refresh.
-            var selected_before = this.selected;
-
-            this.clear_list();
-
-            var message = error_msg || 'Notebook list empty.',
-                item = null,
-                model = null,
-                len = list.content.length,
-                n_uploads = this.element.children('.list_item').length;
-
-            if (len === 0) {
-                item = this.new_item(0);
-                var span12 = item.children().first();
-                span12.empty();
-                span12.append($('<div style="margin:auto;text-align:center;color:grey"/>').text(message));
-            }
-
-            var path = this.notebook_path,
-                offset = n_uploads, m;
-
-            if (path !== '' && (m = path.match(/^([^\/]+\/[^\/]+)\//))) {
-                item = this.new_item(offset, false);
-                model = {
-                    type: 'directory',
-                    name: '..',
-                    path: m[1],
-                };
-                this.add_link(model, item);
-                offset += 1;
-            }
-            for (var i = 0; i < len; i++) {
-                model = list.content[i];
-                item = this.new_item(i + offset, model['type'] != 'directory');
-                try {
-                    this.add_link(model, item);
-                } catch (err) {
-                    console.log('Error adding link: ' + err);
-                }
-            }
-            // Trigger an event when we've finished drawing the notebook list.
-            events.trigger('draw_notebook_list.NotebookList');
-
-            // Reselect the items that were selected before.  Notify listeners
-            // that the selected items may have changed.  O(n^2) operation.
-            selected_before.forEach(function (item) {
-                var list_items = $('.list_item');
-                for (var i = 0; i < list_items.length; i++) {
-                    var $list_item = $(list_items[i]);
-                    if ($list_item.data('path') === item.path) {
-                        $list_item.find('input[type=checkbox]').prop('checked', true);
-                        break;
-                    }
-                }
-            });
-            this._selection_changed();
-        };
-
     }
 
     /** Extending Notebook class. */

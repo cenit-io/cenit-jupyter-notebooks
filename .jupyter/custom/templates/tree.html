@@ -15,6 +15,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
       <div id="notebooks" class="tab-pane active">
           <div id="notebook_list">
             <div id="notebook_list_header" class="row list_header">
+              {% if breadcrumbs[3] %}
               <div class="pull-left btn-group dropdown" id="tree-selector">
                 <button title="Select All / None" type="button" class="btn btn-default btn-xs" id="button-select-all">
                   <input type="checkbox" class="pull-left tree-selector" id="select-all"><span id="counter-select-all">&nbsp;</span></input>
@@ -26,6 +27,14 @@ data-notebook-path="{{notebook_path | urlencode}}"
                 <ul id='selector-menu' class="dropdown-menu" role="menu" aria-labelledby="tree-selector-btn">
                   <li role="presentation"><a id="select-notebooks" role="menuitem" tabindex="-1" href="#" title="Select All Notebooks"><i class="menu_icon notebook_icon icon-fixed-width"></i> All Notebooks</a></li>
                   <li role="presentation"><a id="select-running-notebooks" role="menuitem" tabindex="-1" href="#" title="Select Running Notebooks"><i class="menu_icon running_notebook_icon icon-fixed-width"></i> Running</a></li>
+                </ul>
+              </div>
+              <div id="project_name" class="pull-left">
+                <ul class="breadcrumb">
+                  <li><a href="{{breadcrumbs[2][0]}}"><i class="fa fa-home"></i></a></li>
+                {% for crumb in breadcrumbs[3:] %}
+                  <li>{{crumb[1]}}</li>
+                {% endfor %}
                 </ul>
               </div>
               <div class="pull-left">
@@ -40,7 +49,9 @@ data-notebook-path="{{notebook_path | urlencode}}"
                   <button title="Delete selected" class="delete-button btn btn-default btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                 </div>
               </div>
+              {% endif %}
               <div class="pull-right">
+                {% if breadcrumbs[3] %}
                 <div id="new-buttons" class="btn-group">
                   <button class="dropdown-toggle btn btn-default btn-xs" data-toggle="dropdown">
                     <span>New</span>
@@ -50,6 +61,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
                     <li role="presentation" class="dropdown-header" id="notebook-kernels">Notebooks</li>
                   </ul>
                 </div>
+                {% endif %}
                 <div class="btn-group">
                     <button id="refresh_notebook_list" title="Refresh notebook list" class="btn btn-default btn-xs">
                       <i class="fa fa-refresh"></i>

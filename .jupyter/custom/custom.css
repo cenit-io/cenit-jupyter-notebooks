@@ -3,7 +3,15 @@
     padding-right: 1ex;
 }
 
+#notebook_list div.list_item:nth-child(2) {
+    display: none;
+}
+
 #notebook_list div.list_item.directory .shared_icon {
+    visibility: hidden;
+}
+
+#notebook_list div.list_item.directory input {
     visibility: hidden;
 }
 
@@ -86,4 +94,30 @@ span.save_widget {
 
 span.save_widget span.filename {
     font-size: small;
+}
+
+.breadcrumb > li {
+    display: inline-block;
+}
+
+.breadcrumb > li + li:before {
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    content: "\f101";
+    padding: 0 3px;
+    color: #5e5e5e;
+}
+
+.breadcrumb:after {
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    content: "\f101";
 }
