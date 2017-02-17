@@ -37,8 +37,8 @@ class CenitIO:
     except:
       raise web.HTTPError(400, u'Cenit-IO error: %s' % sys.exc_info()[0])
 
-    error = data.get('error')
-    if error: raise web.HTTPError(404, u'Cenit-IO error: %s' % error)
+    errors = data.get('errors')
+    if errors: raise web.HTTPError(404, u'Cenit-IO error: %s' % errors)
 
     return data
 
