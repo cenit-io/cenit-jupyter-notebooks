@@ -59,7 +59,7 @@ define(function (require, exports, module) {
                 checked = 0,
                 has_read_only = false,
                 has_directories = false,
-                anonymous = $('.list_item').last().data('path').match(/^-\/-\//);
+                anonymous = $('body').data('notebookPath').match(/^-\/-\//);
 
             $('.list_item :checked').each(function (index, item) {
                 var parent = $(item).parent().parent(),
