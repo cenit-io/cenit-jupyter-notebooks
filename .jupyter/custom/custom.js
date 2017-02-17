@@ -125,7 +125,7 @@ define(function (require, exports, module) {
             item.data('writable', model.writable);
             item.data('notebook_path', model.writable);
 
-            item.find(".item_name").text(model.name.replace(/\.ipynb/, ''));
+            item.find(".item_name").text(model.name.replace(/^setup\/|\.ipynb$/g, ''));
 
             item.addClass(running ? 'running' : 'stopped');
             item.addClass(model.type);
