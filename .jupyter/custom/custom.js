@@ -34,17 +34,20 @@ define(function (require, exports, module) {
             if (!NotebookList._custom_bound_singletons) {
                 NotebookList._custom_bound_singletons = true;
                 // Bind events for action buttons.
-                $('.shared-button').off('click').on('click', $.proxy(this.toggle_shared_selected, this));
+                $('.cross-origin').off('click').on('click', $.proxy(this.cross_origin, this));
             }
         };
 
-        NotebookList.prototype.toggle_shared_selected = function () {
-            var that = this;
+        NotebookList.prototype.cross_origin = function (e) {
+            console.log(arguments);
+            var that = this,
+                origin = $(e.target).parents('li').data('origin');
+
             this.selected.forEach(function (item) {
                 if (item.type === 'notebook') {
                     that.contents.save(item.path, {
                         id: item.id,
-                        shared: !item.shared
+                        origin: origin
                     }).then(function () {
                         that.session_list.load_sessions();
                     })
@@ -62,8 +65,7 @@ define(function (require, exports, module) {
                 anonymous = $('body').data('notebookPath').match(/^-\/-\//);
 
             $('.list_item :checked').each(function (index, item) {
-                var parent = $(item).parent().parent(),
-                    shared = parent.data('shared');
+                var parent = $(item).parent().parent();
 
                 // If the item doesn't have an upload button, isn't the
                 // breadcrumbs and isn't the parent folder '..', then it can be selected.
@@ -117,11 +119,16 @@ define(function (require, exports, module) {
         };
 
         NotebookList.prototype.add_link = function (model, item) {
-            var running = this.is_running(model);
+            var running = this.is_running(model),
+                titles = {
+                    default: 'Non shared',
+                    owner: 'Shared with my tenant',
+                    shared: 'Shared with all users',
+                };
 
             this.parent_add_link(model, item);
             item.data('id', model.id);
-            item.data('shared', model.shared);
+            item.data('origin', model.origin);
             item.data('writable', model.writable);
             item.data('notebook_path', model.writable);
 
@@ -129,10 +136,13 @@ define(function (require, exports, module) {
 
             item.addClass(running ? 'running' : 'stopped');
             item.addClass(model.type);
-            item.addClass(model.shared ? 'shared' : 'private');
+            item.addClass(model.origin);
             item.addClass(model.writable ? 'writable' : 'read-only');
 
-            $('<i/>').addClass('item_icon').addClass('shared_icon').insertAfter(item.find('.item_icon'));
+            $('<i/>').addClass('item_icon')
+                .addClass('shared_icon')
+                .prop('title', titles[model.origin])
+                .insertAfter(item.find('.item_icon'));
         };
     }
 

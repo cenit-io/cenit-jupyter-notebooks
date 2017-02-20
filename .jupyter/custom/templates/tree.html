@@ -32,7 +32,34 @@ data-notebook-path="{{notebook_path | urlencode}}"
                 <div class="dynamic-buttons">
                   <button title="Duplicate selected" class="duplicate-button btn btn-default btn-xs">Duplicate</button>
                   <button title="Rename selected" class="rename-button btn btn-default btn-xs">Rename</button>
-                  <button title="Toggle shared status of selected notebook(s)" class="shared-button btn btn-default btn-xs">Toggle shared</button>
+                  <div class="btn-group dropdown">
+                    <button title="Toggle shared status of selected notebook(s)"
+                            class="shared-button dropdown-toggle btn btn-default btn-xs"
+                            data-toggle="dropdown">
+                      <span>Shared</span>
+                      <span class="caret"></span>
+                    </button>
+                    <ul id="cross-shared-menu" class="dropdown-menu">
+                      <li role="presentation" id="cross-to-shared" class="cross-origin shared" data-origin="shared">
+                        <a role="menuitem" tabindex="-1" href="#">
+                          <i class="item_icon shared_icon"></i>
+                          <span>Shared with all users</span>
+                        </a>
+                      </li>
+                      <li role="presentation" id="cross-to-owner" class="cross-origin owner" data-origin="owner">
+                        <a role="menuitem" tabindex="-1" href="#">
+                          <i class="item_icon shared_icon"></i>
+                          <span>Shared with my tenant</span>
+                        </a>
+                      </li>
+                      <li role="presentation" id="cross-to-de-fault" class="cross-origin default" data-origin="default">
+                        <a role="menuitem" tabindex="-1" href="#">
+                          <i class="item_icon shared_icon"></i>
+                          <span>Non shared</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                   <button title="Shutdown selected notebook(s)" class="shutdown-button btn btn-default btn-xs btn-warning">Shutdown</button>
                   <button title="Delete selected" class="delete-button btn btn-default btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                 </div>

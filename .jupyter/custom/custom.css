@@ -60,6 +60,10 @@
     top: -1px;
 }
 
+.list_item .shared_icon:before {
+    cursor: help;
+}
+
 .shared_icon:before {
     content: "\f1e0";
 }
@@ -69,8 +73,8 @@
     content: "\f040";
 }
 
-.running a,
-.running .item_icon:before {
+.list_item.running a,
+.list_item.running .item_icon:before {
     color: #5cb85c;
 }
 
@@ -78,6 +82,17 @@
 .writable .running_notebook_icon,
 .shared .shared_icon {
     opacity: 1;
+    color: green;
+}
+
+.owner .shared_icon {
+    opacity: 0.6;
+    color: gold;
+}
+
+.default .shared_icon {
+    opacity: 0.3;
+    color: red;
 }
 
 .container {

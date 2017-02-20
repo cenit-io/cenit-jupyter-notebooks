@@ -131,6 +131,7 @@ class ApiContentsManager(ContentsManager, CenitIO):
     to_path = '%s/%s' % (to_path, to_name)
 
     model.pop('id')
+    model.pop('origin')
     model = self.save(model, to_path, True)
 
     return model

@@ -33,6 +33,8 @@ class CenitIO:
       response = session.send(prepped)
 
       data = json.loads(response.text)
+      print('--------------------')
+      print(params)
 
     except:
       raise web.HTTPError(400, u'Cenit-IO error: %s' % sys.exc_info()[0])
@@ -62,7 +64,7 @@ class CenitIO:
     else:
       params['order'] = 'name'
       params['module'] = module
-      params['only'] = 'module,name,writable,shared,created_at,updated_at'
+      params['only'] = 'module,name,writable,origin,created_at,updated_at'
 
     data = self.cenit_io_send_request(uri, key, token, params)
 
@@ -101,13 +103,13 @@ class CenitIO:
     (key, token, module, name) = self.parse_notebook_path(path)
 
     content = model.get('content', None)
-    shared = model.get('shared', None)
+    origin = model.get('origin', None)
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
     params = {'name': name, 'module': module}
 
     if None != content: params['content'] = nbformat.writes(nbformat.from_dict(content), NBFORMAT_VERSION)
-    if None != shared:  params['shared'] = shared
+    if None != origin:  params['origin'] = origin
     if not create: params['id'] = model.get('id') or self.cenit_io_get(path).get('id')
     data = self.cenit_io_send_request(uri, key, token, params, 'POST')
 
@@ -140,13 +142,13 @@ class CenitIO:
       model['path'] = '%s/%s/%s/%s' % (key, token, module, name)
       model['writable'] = notebook.get('writable', False)
       model['type'] = 'notebook'
-      model['shared'] = notebook.get('shared', False)
+      model['origin'] = notebook.get('origin', 'default')
     else:
       model['name'] = module
       model['path'] = '%s/%s/%s' % (key, token, module)
       model['writable'] = False
       model['type'] = 'directory'
-      model['shared'] = False
+      model['origin'] = 'default'
 
     if content:
       model['format'] = 'json'
