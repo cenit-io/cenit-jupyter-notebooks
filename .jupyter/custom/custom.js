@@ -122,7 +122,7 @@ define(function (require, exports, module) {
             var running = this.is_running(model),
                 titles = {
                     default: 'Non shared',
-                    owner: 'Shared with my tenant',
+                    owner: 'Shared with my tenants',
                     shared: 'Shared with all users',
                 };
 
