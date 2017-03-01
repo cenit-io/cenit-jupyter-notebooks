@@ -5,6 +5,7 @@ define(function (require, exports, module) {
         IPython = require('base/js/namespace'),
         events = require('base/js/events'),
         utils = require('base/js/utils'),
+        dialog = require('base/js/dialog'),
 
         kill_and_exit = function () {
             var close = function () {
@@ -170,14 +171,50 @@ define(function (require, exports, module) {
         MenuBar.prototype.parent_bind_events = MenuBar.prototype.bind_events;
 
         MenuBar.prototype.bind_events = function () {
+            var that = this;
+
             this.parent_bind_events();
             this.element.find('#kill_and_exit').off('click').on('click', kill_and_exit);
+            // this.element.find('#cenit-io-key-tokens').off('click').on('click', )
         };
     }
 
     /** Extending notebook actions. */
     $([IPython.events]).on('notebook_loaded.Notebook', function () {
+        var that = this,
+
+            cenit_io_key_tokens = function () {
+                var path = $('body').data('notebookPath').split('/');
+
+                dialog.modal({
+                    title: "Cenit-IO user access key and token:",
+                    body: $('<ul>')
+                        .append($('<li>')
+                            .append($('<strong>').text('user_access_key: '))
+                            .append($('<span>').text(path[0]))
+                        )
+                        .append($('<li>')
+                            .append($('<strong>').addClass('bold').text('user_access_token: '))
+                            .append($('<span>').text(path[1]))
+                        ),
+                    buttons: {"OK": {class: "btn-primary"}}
+                });
+
+                console.log(path);
+            };
+
+        console.log(IPython);
+
         /* Add toolbar buttons */
+        IPython.toolbar.add_buttons_group([
+            {
+                id: 'cenit-io-key-tokens',
+                label: 'Show my Cenit-IO access key and token',
+                icon: 'fa-key',
+                callback: cenit_io_key_tokens
+            }
+        ]);
+
         IPython.toolbar.add_buttons_group([
             {
                 id: 'close',
