@@ -63,6 +63,7 @@ define(function (require, exports, module) {
                 checked = 0,
                 has_read_only = false,
                 has_directories = false,
+                has_shared = false,
                 anonymous = $('body').data('notebookPath').match(/^-\/-\//);
 
             $('.list_item :checked').each(function (index, item) {
@@ -74,6 +75,7 @@ define(function (require, exports, module) {
                 if (parent.find('.upload_button').length === 0 && parent.data('path') !== '' && parent.data('path') !== utils.url_path_split(that.notebook_path)[0]) {
                     checked++;
                     that.selected[index] = parent.data();
+                    has_shared = has_shared || (that.selected[index].origin != 'default');
                     has_read_only = has_read_only || !that.selected[index].writable;
                     has_directories = has_directories || (that.selected[index].type == 'directory');
                 }
@@ -101,7 +103,7 @@ define(function (require, exports, module) {
             }
 
             // Delete is visible if one or more items are selected.
-            if (checked > 0 && !anonymous && !has_read_only && !has_directories) {
+            if (checked > 0 && !anonymous && !has_read_only && !has_directories && !has_shared) {
                 $('.delete-button').css('display', 'inline-block');
             } else {
                 $('.delete-button').css('display', 'none');
