@@ -27,14 +27,17 @@ class CenitIO:
       if key != '-': options['headers']['X-User-Access-Key'] = key
       if token != '-': options['headers']['X-User-Access-Token'] = token
 
+      self.log.debug('CENIT-IO REQUEST: [%s] -> %s' % (method, uri))
+      self.log.debug('CENIT-IO REQUEST PARAMS: %s' % (json.dumps(params)))
+
       session = Session()
       request = Request(method, uri, **options)
       prepped = request.prepare()
       response = session.send(prepped)
 
+      self.log.debug('CENIT-IO RESPONSE: %s' % (response.text))
+
       data = json.loads(response.text)
-      print('--------------------')
-      print(params)
 
     except:
       raise web.HTTPError(400, u'Cenit-IO error: %s' % sys.exc_info()[0])
@@ -116,7 +119,7 @@ class CenitIO:
     return self.parse(key, token, data['success']['notebook'])
 
   def cenit_io_delete(self, path):
-    model = self.cenit_io_get(path)
+    model = self.cenit_io_get(path, False)
     uri = '%s/setup/notebook/%s.json' % (self.cenitio_api_base_url, model.get('id'))
     (key, token, module, name) = self.parse_notebook_path(path)
     self.cenit_io_send_request(uri, key, token, {}, 'DELETE')

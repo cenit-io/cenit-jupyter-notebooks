@@ -10,6 +10,7 @@ heroku or CloudFoundry.
 ```
 $ pip3 install notebook ipywidgets requests iso8601
 
+$ gem install ffi-rzmq
 $ gem install cztop
 $ gem install iruby
 
@@ -17,7 +18,7 @@ $ git clone https://github.com/cenit-io/cenit-jupyter-notebooks.git
 $ cd cenit-jupyter-notebooks
 $ cp -ax .jupyter ~/
 
-$ iruby notebook --debug
+$ jupyter notebook --debug
 ```
 
 ### heroku - manual deployment
@@ -43,7 +44,7 @@ $ heroku config:set CENITIO_BASE_URL='http://cenit.io' -a <your_app>
 ## Environment variables
 
 - `CENITIO_BASE_URL`: **(Used in Jupyter App)** Set Cenit-IO base url.
-- `JUPYTER_NOTEBOOK_ARGS`: **(Used in Jupyter App)** Additional command line args passed to
-  `jupyter notebook`; e.g. get a more verbose logging using `--debug`
+- `JUPYTER_NOTEBOOK_ARGS`: **(Used in Jupyter App)** Additional command line args passed to `jupyter notebook`; e.g. get a more verbose logging using `--debug`
+- `JUPYTER_NOTEBOOKS`: **(Used in Cenit-IO App)** Enable or disable notebooks in Cenit-IO.
 - `JUPYTER_NOTEBOOKS_URL`: **(Used in Cenit-IO App)** Set jupyter app url.
 
