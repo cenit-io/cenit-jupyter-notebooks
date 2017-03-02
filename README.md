@@ -33,11 +33,7 @@ $ cd cenit-jupyter-notebooks
 $ heroku apps:create <your_app>
 $ heroku buildpacks:set https://github.com/pl31/heroku-buildpack-conda.git 
 $ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby.git
-$ heroku buildpacks:set https://github.com/fabiokung/heroku-buildpack-fakesu.git
-
-$ heroku run console
-
-$ apt-get install libzmq-dbg libzmq-dev libzmq1
+$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-apt
 ```
 
 ### Environment variable
