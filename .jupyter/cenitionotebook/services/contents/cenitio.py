@@ -1,4 +1,5 @@
 from requests import Request, Session
+from traitlets.config.configurable import LoggingConfigurable
 from traitlets import Unicode
 from datetime import datetime
 from tornado import web
@@ -10,7 +11,7 @@ import sys
 NBFORMAT_VERSION = 4
 
 
-class CenitIO:
+class CenitIO(LoggingConfigurable):
   cenitio_api_base_url = Unicode(
     default_value='http://127.0.0.1:3000/api/v2',
     allow_none=False,
