@@ -1,2 +1,3 @@
-libtool
+autoconf
+libtool-bin
 libzmq3-dev
