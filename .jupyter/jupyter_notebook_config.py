@@ -11,7 +11,7 @@ try:
 
   c = get_config()
 
-  # cenitio_base_url = os.getenv('CENITIO_BASE_URL', 'http://127.0.0.1:3000').strip('/')
+  cenitio_base_url = os.getenv('CENITIO_BASE_URL', 'http://127.0.0.1:3000').strip('/')
 
   ### Password protection ###
   # http://jupyter-notebook.readthedocs.io/en/latest/security.html
@@ -41,9 +41,9 @@ try:
   ### Disable cross-site-request-forgery protection
   c.NotebookApp.disable_check_xsrf = True
 
-  # c.NotebookApp.tornado_settings = {
-  #   'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
-  # }
+  c.NotebookApp.tornado_settings = {
+    'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
+  }
 
   ### The base name used when creating untitled notebooks.
   c.ContentsManager.untitled_notebook = 'untitled-notebook'
