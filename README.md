@@ -38,13 +38,13 @@ $ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby.git
 ### Environment variable
 
 ```
-$ heroku config:set CENITIO_BASE_URL='http://cenit.io' -a <your_app>
+$ heroku config:set CENITIO_BASE_URL='https://cenit.io' -a <your_app>
 ```
 
 ## Environment variables
 
-- `CENITIO_BASE_URL`: **(Used in Jupyter App)** Set Cenit-IO base url.
+- `CENITIO_BASE_URL`: **(Used in Jupyter App)** Set Cenit-IO base url. `//cenit.io`
 - `JUPYTER_NOTEBOOK_ARGS`: **(Used in Jupyter App)** Additional command line args passed to `jupyter notebook`; e.g. get a more verbose logging using `--debug`
-- `JUPYTER_NOTEBOOKS`: **(Used in Cenit-IO App)** Enable or disable notebooks in Cenit-IO.
-- `JUPYTER_NOTEBOOKS_URL`: **(Used in Cenit-IO App)** Set jupyter app url.
+- `JUPYTER_NOTEBOOKS`: **(Used in Cenit-IO App)** Enable or disable notebooks in Cenit-IO. e.g. `True`
+- `JUPYTER_NOTEBOOKS_URL`: **(Used in Cenit-IO App)** Set jupyter app url. e.g. `//cenit-jupyter-notebooks.herokuapp.com`
 
