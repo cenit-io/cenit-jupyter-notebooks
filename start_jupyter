@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-jupyter contrib nbextension install --user
-jupyter nbextensions_configurator enable --user
+#jupyter contrib nbextension install --user
+#jupyter nbextensions_configurator enable --user
 
-iruby notebook \
-	--no-browser --no-mathjax --ip=* --port $PORT \
-	$JUPYTER_NOTEBOOK_ARGS \
-	notebooks
+jupyter notebook --no-browser --no-mathjax --ip=* --port $PORT
