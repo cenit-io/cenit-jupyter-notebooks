@@ -26,7 +26,7 @@ try:
   c.NotebookApp.contents_manager_class = 'cenitionotebook.services.contents.manager.ApiContentsManager'
 
   ### The cenit-io api base url.
-  # c.ApiContentsManager.cenitio_api_base_url = cenitio_api_base_url
+  c.ApiContentsManager.cenitio_api_base_url = cenitio_api_base_url
 
   ### The default URL to redirect to from `/`
   c.NotebookApp.default_url = '/tree/-/-/notebook'
