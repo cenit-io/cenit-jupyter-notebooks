@@ -8,6 +8,10 @@ GEM
       czmq-ffi-gen (~> 0.13.0)
     data_uri (0.1.0)
     ffi (1.9.17)
+    ffi-rzmq (2.0.4)
+      ffi-rzmq-core (>= 1.0.1)
+    ffi-rzmq-core (1.0.5)
+      ffi
     iruby (0.2.9)
       bond (~> 0.5)
       data_uri (~> 0.1)
@@ -21,6 +25,7 @@ PLATFORMS
 
 DEPENDENCIES
   cztop
+  ffi-rzmq
   iruby
 
 BUNDLED WITH
