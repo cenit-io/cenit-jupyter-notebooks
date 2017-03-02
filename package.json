@@ -1,0 +1,19 @@
+{
+  "name": "cenit-jupyter-notebooks",
+  "version": "1.0.0",
+  "description": "Use this application to deploy Cenit-IO [Jupyter Notebook](https://jupyter.org/) to heroku or CloudFoundry.",
+  "dependencies": {
+    "jupyter-js-notebook": "^0.21.3"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cenit-io/cenit-jupyter-notebooks.git"
+  },
+  "author": "Yoandry Pacheco Aguila <yoandrypa@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cenit-io/cenit-jupyter-notebooks/issues"
+  },
+  "homepage": "https://github.com/cenit-io/cenit-jupyter-notebooks#readme"
+}

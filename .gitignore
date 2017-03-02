@@ -4,3 +4,4 @@
 .jupyter/cenitionotebook/services/__pycache__/
 .jupyter/cenitionotebook/services/contents/__pycache__/
 .jupyter/migrated
+node_modules/
