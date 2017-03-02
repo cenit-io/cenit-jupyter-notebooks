@@ -31,9 +31,9 @@ $ git clone https://github.com/cenit-io/cenit-jupyter-notebooks.git
 $ cd cenit-jupyter-notebooks
 
 $ heroku apps:create <your_app>
+$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-apt
 $ heroku buildpacks:set https://github.com/pl31/heroku-buildpack-conda.git 
 $ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-ruby.git
-$ heroku buildpacks:set https://github.com/heroku/heroku-buildpack-apt
 ```
 
 ### Environment variable
