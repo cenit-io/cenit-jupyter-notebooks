@@ -1,19 +1,16 @@
 {
-  "name": "jupyter",
+  "name": "cenit-jupyter-notebooks",
   "buildpacks": [
-    { "url": "https://github.com/pl31/heroku-buildpack-conda.git" }
+    { "url": "https://github.com/cenit-io/cenit-jupyter-notebooks.git" }
   ],
   "env": {
-    "JUPYTER_NOTEBOOK_PASSWORD": {
-      "description": "IMPORTANT! Set a secure password."
+    "CENITIO_BASE_URL": {
+      "description": "IMPORTANT! Set Cenit-IO base url."
     },
     "JUPYTER_NOTEBOOK_ARGS": {
       "description": "Additional command line arguments.",
       "required": false,
       "value": ""
     }
-  },
-  "addons": [
-    "heroku-postgresql:hobby-dev"
-  ]
+  }
 }

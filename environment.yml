@@ -1,4 +1,4 @@
-name: jupyter-notebook
+name: cenit-jupyter-notebooks
 dependencies:
   - notebook
   - ipywidgets

@@ -1,12 +1,9 @@
 # Manifest for use in CloudFoundry
 ---
 applications:
-- name: jupyter
+- name: cenit-jupyter-notebooks
   memory: 512M
   instances: 1
   buildpack: https://github.com/pl31/heroku-buildpack-conda.git
   random-route: true
   command: ~/start_jupyter
-  services:
-  # enforce a postgres database
-  - jupyter-db
