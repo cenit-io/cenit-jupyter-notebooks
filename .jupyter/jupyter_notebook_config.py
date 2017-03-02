@@ -11,20 +11,12 @@ try:
 
   c = get_config()
 
-  cenitio_base_url = os.getenv('CENITIO_BASE_URL', 'http://127.0.0.1:3000').strip('/')
+  # cenitio_base_url = os.getenv('CENITIO_BASE_URL', 'http://127.0.0.1:3000').strip('/')
 
   ### Password protection ###
   # http://jupyter-notebook.readthedocs.io/en/latest/security.html
   c.NotebookApp.token = ''
   c.NotebookApp.password = ''
-
-  ### CloudFoundry specific settings
-  vcap_application_json = os.getenv('VCAP_APPLICATION', None)
-  if vcap_application_json:
-    vcap_application = json.loads(vcap_application_json)
-    uri = vcap_application['uris'][0]
-    c.NotebookApp.allow_origin = 'https://{}'.format(uri)
-    c.NotebookApp.websocket_url = 'wss://{}:4443'.format(uri)
 
   ### Whether to open in a browser after starting.
   c.NotebookApp.open_browser = False
@@ -33,7 +25,7 @@ try:
   c.NotebookApp.contents_manager_class = 'cenitionotebook.services.contents.manager.ApiContentsManager'
 
   ### The cenit-io api base url.
-  c.ApiContentsManager.cenitio_api_base_url = "{}/api/v2".format(cenitio_base_url)
+  # c.ApiContentsManager.cenitio_api_base_url = "{}/api/v2".format(cenitio_base_url)
 
   ### The default URL to redirect to from `/`
   c.NotebookApp.default_url = '/tree/-/-/notebook'
@@ -49,9 +41,9 @@ try:
   ### Disable cross-site-request-forgery protection
   c.NotebookApp.disable_check_xsrf = True
 
-  c.NotebookApp.tornado_settings = {
-    'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
-  }
+  # c.NotebookApp.tornado_settings = {
+  #   'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
+  # }
 
   ### The base name used when creating untitled notebooks.
   c.ContentsManager.untitled_notebook = 'untitled-notebook'
