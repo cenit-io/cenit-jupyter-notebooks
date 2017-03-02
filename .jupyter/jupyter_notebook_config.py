@@ -25,7 +25,7 @@ try:
   c.NotebookApp.contents_manager_class = 'cenitionotebook.services.contents.manager.ApiContentsManager'
 
   ### The cenit-io api base url.
-  c.ApiContentsManager.cenitio_api_base_url = "{}/api/v2".format(cenitio_base_url)
+  c.ApiContentsManager.cenitio_api_base_url = cenitio_base_url + "/api/v2"
 
   ### The default URL to redirect to from `/`
   c.NotebookApp.default_url = '/tree/-/-/notebook'
@@ -42,7 +42,7 @@ try:
   c.NotebookApp.disable_check_xsrf = True
 
   c.NotebookApp.tornado_settings = {
-    'headers': {'Content-Security-Policy': "frame-ancestors 'self' {}".format(cenitio_base_url)}
+    'headers': {'Content-Security-Policy': "frame-ancestors 'self' " + cenitio_base_url}
   }
 
   ### The base name used when creating untitled notebooks.
