@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Use this application to deploy Cenit-IO [Jupyter Notebook](https://jupyter.org/) to heroku or CloudFoundry.",
   "dependencies": {
-    "ijavascript": "^5.0.16"
+    "ijavascript": "^5.0.16",
+    "request": "^2.79.0"
   },
   "devDependencies": {},
   "repository": {
