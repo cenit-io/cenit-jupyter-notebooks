@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-npm install -g ijavascript
+iruby register
+./node_modules/.bin/ijs --ijs-install-kernel
 
 jupyter notebook --no-browser --no-mathjax --ip=* --port $PORT
+
