@@ -2,4 +2,4 @@
 
 npm install -g ijavascript
 
-ijs notebook --no-browser --no-mathjax --ip=* --port $PORT
+ijs --no-browser --no-mathjax --ip=* --port $PORT
