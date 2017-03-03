@@ -19,6 +19,7 @@ GEM
       multi_json (~> 1.11)
     mimemagic (0.3.2)
     multi_json (1.12.1)
+    rbczmq (1.7.9)
 
 PLATFORMS
   ruby
@@ -27,6 +28,10 @@ DEPENDENCIES
   cztop
   ffi-rzmq
   iruby
+  rbczmq
+
+RUBY VERSION
+   ruby 2.2.1p85
 
 BUNDLED WITH
    1.13.6

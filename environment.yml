@@ -1,6 +1,0 @@
-name: cenit-jupyter-notebooks
-dependencies:
-  - notebook
-  - ipywidgets
-  - requests
-  - iso8601
