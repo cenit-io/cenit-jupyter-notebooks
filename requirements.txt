@@ -3,4 +3,4 @@ notebook==4.3.1
 ipywidgets==5.2.2
 requests==2.12.4
 iso8601==0.1.11
-bash_kernel=0.6
+bash_kernel==0.6
