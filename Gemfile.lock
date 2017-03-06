@@ -7,18 +7,31 @@ GEM
     cztop (0.11.4)
       czmq-ffi-gen (~> 0.13.0)
     data_uri (0.1.0)
+    domain_name (0.5.25)
+      unf (>= 0.0.5, < 1.0.0)
     ffi (1.9.17)
     ffi-rzmq (2.0.4)
       ffi-rzmq-core (>= 1.0.1)
     ffi-rzmq-core (1.0.5)
       ffi
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     iruby (0.2.9)
       bond (~> 0.5)
       data_uri (~> 0.1)
       mimemagic (~> 0.3)
       multi_json (~> 1.11)
+    mime-types (2.99)
     mimemagic (0.3.2)
     multi_json (1.12.1)
+    netrc (0.11.0)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
 
 PLATFORMS
   ruby
@@ -27,6 +40,7 @@ DEPENDENCIES
   cztop
   ffi-rzmq
   iruby
+  rest-client
 
 BUNDLED WITH
    1.13.6
