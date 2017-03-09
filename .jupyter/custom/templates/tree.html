@@ -19,11 +19,10 @@ data-notebook-path="{{notebook_path | urlencode}}"
                 <ul class="breadcrumb">
                   <li><a href="{{breadcrumbs[2][0]}}"><i class="fa fa-home"></i></a></li>
                 {% if breadcrumbs[3] %}
-                  {% for crumb in breadcrumbs[3:] %}
-                    {% if crumb[1] != 'setup' %}
-                      <li>{{crumb[1]}}</li>
-                    {% endif %}
+                  {% for crumb in breadcrumbs[3:-1] %}
+                    <li><a href="{{crumb[0]}}">{{crumb[1]}}</a></li>
                   {% endfor %}
+                  <li>{{breadcrumbs[-1][1]}}</li>
                 {% endif %}
                 </ul>
               </div>

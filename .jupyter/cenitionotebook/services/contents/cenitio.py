@@ -20,6 +20,9 @@ class CenitIO(LoggingConfigurable):
   )
 
   def cenit_io_send_request(self, uri, key, token, params={}, method='GET'):
+    self.log.debug('CENIT-IO REQUEST: [%s] -> %s' % (method, uri))
+    self.log.debug('CENIT-IO REQUEST PARAMS: %s' % (json.dumps(params)))
+
     try:
       options = {
         'headers': {'Content-Type': 'application/json'},
@@ -27,9 +30,6 @@ class CenitIO(LoggingConfigurable):
       }
       if key != '-': options['headers']['X-User-Access-Key'] = key
       if token != '-': options['headers']['X-User-Access-Token'] = token
-
-      self.log.debug('CENIT-IO REQUEST: [%s] -> %s' % (method, uri))
-      self.log.debug('CENIT-IO REQUEST PARAMS: %s' % (json.dumps(params)))
 
       session = Session()
       request = Request(method, uri, **options)
@@ -49,38 +49,18 @@ class CenitIO(LoggingConfigurable):
     return data
 
   def cenit_io_all(self, path):
-    path = path.strip('/')
-
-    try:
-      key, token, module = ('%s/' % (path)).split('/', 2)
-      module = module.strip('/')
-    except:
-      raise web.HTTPError(404, u'Invalid module path: %s' % path)
+    key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {'limit': 10000}
-
-    self.log.debug('MODULE: [%s]' % (module))
-
-    if module == '':
-      params['order'] = 'module'
-      params['only'] = 'module'
-    else:
-      params['order'] = 'name'
-      params['module'] = module
-      params['only'] = 'module,name,writable,origin,created_at,updated_at'
-
+    params = {
+      'limit': 10000,
+      'order': 'name',
+      'parent': '"%s"' % path_without_tokens,
+      'only': 'parent,name,type,writable,origin,created_at,updated_at',
+    }
     data = self.cenit_io_send_request(uri, key, token, params)
 
-    if module != '':
-      notebooks = data['notebooks']
-    else:
-      exists = {}
-      notebooks = []
-      for (i, notebook) in enumerate(data['notebooks']):
-        if not exists.get(notebook['module'], False):
-          notebooks.append(notebook)
-          exists[notebook['module']] = True
+    notebooks = data['notebooks']
 
     for (i, notebook) in enumerate(notebooks):
       notebooks[i] = self.parse(key, token, notebook)
@@ -88,13 +68,15 @@ class CenitIO(LoggingConfigurable):
     return notebooks
 
   def cenit_io_get(self, path, content=True):
-    path = path.strip('/')
-
-    (key, token, module, name) = self.parse_notebook_path(path)
+    key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {'page': 1, 'limit': 1, 'order': 'name', 'module': module, 'name': name}
-
+    params = {
+      'limit': 1,
+      'order': 'name',
+      'parent': '"%s"' % parent,
+      'name': name,
+    }
     data = self.cenit_io_send_request(uri, key, token, params)
 
     if len(data['notebooks']) == 0: raise web.HTTPError(404, u'Notebook not found in path: %s' % path)
@@ -102,15 +84,14 @@ class CenitIO(LoggingConfigurable):
     return self.parse(key, token, data['notebooks'][0], content)
 
   def cenit_io_save(self, path, model, create=False):
-    path = path.strip('/')
-
-    (key, token, module, name) = self.parse_notebook_path(path)
+    key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
 
     content = model.get('content', None)
     origin = model.get('origin', None)
+    type = model.get('type', 'notebook')
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {'name': name, 'module': module}
+    params = {'name': name, 'parent': parent, 'type': type}
 
     if None != content: params['content'] = nbformat.writes(nbformat.from_dict(content), NBFORMAT_VERSION)
     if None != origin:  params['origin'] = origin
@@ -120,9 +101,10 @@ class CenitIO(LoggingConfigurable):
     return self.parse(key, token, data['success']['notebook'])
 
   def cenit_io_delete(self, path):
+    key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
+
     model = self.cenit_io_get(path, False)
     uri = '%s/setup/notebook/%s.json' % (self.cenitio_api_base_url, model.get('id'))
-    (key, token, module, name) = self.parse_notebook_path(path)
     self.cenit_io_send_request(uri, key, token, {}, 'DELETE')
 
   def parse(self, key, token, notebook, content=False):
@@ -130,7 +112,7 @@ class CenitIO(LoggingConfigurable):
     created_at = notebook.get('created_at', now)
     updated_at = notebook.get('updated_at', now)
     name = notebook.get('name', None)
-    module = notebook.get('module', None)
+    parent = notebook.get('parent', '')
 
     if type(created_at) == str:  created_at = iso8601.parse_date(created_at)
     if type(updated_at) == str:  updated_at = iso8601.parse_date(updated_at)
@@ -141,22 +123,18 @@ class CenitIO(LoggingConfigurable):
     model['created'] = created_at
     model['mimetype'] = None
 
-    if name:
-      model['name'] = name
-      model['path'] = '%s/%s/%s/%s' % (key, token, module, name)
-      model['writable'] = notebook.get('writable', False)
-      model['type'] = 'notebook'
-      model['origin'] = notebook.get('origin', 'default')
-    else:
-      model['name'] = module
-      model['path'] = '%s/%s/%s' % (key, token, module)
-      model['writable'] = False
-      model['type'] = 'directory'
-      model['origin'] = 'default'
+    model['name'] = name
+    model['path'] = '%s/%s/%s/%s' % (key, token, parent, name)
+    model['writable'] = notebook.get('writable', False)
+    model['type'] = notebook.get('type', None)
+    model['origin'] = notebook.get('origin', 'default')
 
     if content:
       model['format'] = 'json'
-      model['content'] = nbformat.reads(notebook.get('content', '{}'), NBFORMAT_VERSION)
+      if model['type'] == 'directory':
+        model['content'] = self.cenit_io_all(model['path'])
+      else:
+        model['content'] = nbformat.reads(notebook.get('content', '{}'), NBFORMAT_VERSION)
     else:
       model['format'] = None
       model['content'] = None
@@ -165,9 +143,12 @@ class CenitIO(LoggingConfigurable):
 
   def parse_notebook_path(self, path):
     try:
-      (key, token, module) = path.split('/', 2)
-      (module, name) = module.rsplit('/', 1)
+      path_with_tokens = path.strip('/')
+      key, token, path_without_tokens = ('%s/' % (path_with_tokens)).split('/', 2)
+      path_without_tokens = path_without_tokens.strip('/')
+      parent, name = ('/%s' % (path_without_tokens)).rsplit("/", 1)
+      parent = parent.strip('/')
     except:
       raise web.HTTPError(404, u'Invalid notebook path: %s' % path)
 
-    return (key, token, module, name)
+    return (key, token, path_without_tokens, parent, name)

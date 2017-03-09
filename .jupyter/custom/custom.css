@@ -8,14 +8,6 @@
     display: none;
 }
 
-#notebook_list div.list_item.directory .shared_icon {
-    visibility: hidden;
-}
-
-#notebook_list div.list_item.directory input {
-    visibility: hidden;
-}
-
 .list_item:nth-child(0) {
     font-size: 30px;
 }
@@ -46,6 +38,10 @@
 
 .item_icon {
     margin-left: 0px;
+}
+
+.item_icon.shared_icon,
+.item_icon.writable_icon {
     opacity: 0.3;
 }
 
@@ -68,8 +64,7 @@
     content: "\f1e0";
 }
 
-.notebook_icon:before,
-.running_notebook_icon:before {
+.writable_icon:before {
     content: "\f040";
 }
 
@@ -78,8 +73,7 @@
     color: #5cb85c;
 }
 
-.writable .notebook_icon,
-.writable .running_notebook_icon,
+.writable .writable_icon,
 .shared .shared_icon {
     opacity: 1;
     color: green;

@@ -21,18 +21,13 @@ class ApiContentsManager(ContentsManager, CenitIO):
     self.log.debug('  FORMAT: %s' % (format))
     self.log.debug('  CONTENT: %s' % (content))
     #################################################
-    path = path.strip('/')
 
-    if type == 'directory':
-      try:
-        key, token, module = ('%s/' % (path)).split('/', 2)
-        module = module.strip('/')
-      except:
-        raise web.HTTPError(404, u'Invalid module path: %s' % path)
+    key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
 
+    if name == '':
       model = {}
-      model['name'] = module
-      model['path'] = module
+      model['name'] = 'home'
+      model['path'] = ''
       model['last_modified'] = datetime.datetime.now()
       model['created'] = datetime.datetime.now()
       model['format'] = 'json'
@@ -63,11 +58,11 @@ class ApiContentsManager(ContentsManager, CenitIO):
     self.log.debug('RENAMING OLD FILE: %s' % (old_path))
     self.log.debug('RENAMING NEW FILE: %s' % (new_path))
     #################################################
-    if new_path == old_path:return
+    if new_path == old_path: return
 
     # Should we proceed with the move?
     if self.file_exists(new_path):
-      raise web.HTTPError(409, u'File already exists: %s' % new_path.split('/',2)[2])
+      raise web.HTTPError(409, u'File already exists: %s' % new_path.split('/', 2)[2])
 
     model = self.cenit_io_get(old_path)
     self.cenit_io_save(new_path, model)
@@ -76,25 +71,26 @@ class ApiContentsManager(ContentsManager, CenitIO):
     self.log.debug('CHECKING FILE EXISTENCE: %s' % (path))
     #################################################
     try:
-      result = (self.cenit_io_get(path, False) != None)
+      notebook = self.cenit_io_get(path, False)
+      result = (notebook != None and notebook.get('type') != 'directory')
     except:
       result = False
 
     self.log.debug('CHECKING FILE EXISTENCE: %s [%s]' % (path, result))
+
     return result
 
   def dir_exists(self, path):
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s' % (path))
     #################################################
-    path = path.strip('/')
-
-    if re.match(r'.*\.ipynb$', path):
+    try:
+      notebook = self.cenit_io_get(path, False)
+      result = (notebook != None and notebook.get('type') == 'directory')
+    except:
       result = False
-    else:
-      # Assuming that all directories exist.
-      result = len(path.split('/')) >= 2
 
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s [%s]' % (path, result))
+
     return result
 
   def is_hidden(self, path):
@@ -104,6 +100,8 @@ class ApiContentsManager(ContentsManager, CenitIO):
     return False
 
   def new(self, model=None, path=''):
+    self.log.debug('-----------------------------------------------------: %s' % (path))
+
     path = path.strip('/')
 
     if model is None: model = {}
@@ -117,6 +115,7 @@ class ApiContentsManager(ContentsManager, CenitIO):
     return model
 
   def copy(self, from_path, to_path=None):
+    self.log.debug('-----------------------------------')
     model = self.get(from_path)
     if model == None: raise web.HTTPError(404, u'Notebook not found in path: %s' % from_path)
 

@@ -143,9 +143,13 @@ define(function (require, exports, module) {
             item.addClass(model.writable ? 'writable' : 'read-only');
 
             $('<i/>').addClass('item_icon')
+                .addClass('writable_icon')
+                .insertBefore(item.find('.item_link'));
+
+            $('<i/>').addClass('item_icon')
                 .addClass('shared_icon')
                 .prop('title', titles[model.origin])
-                .insertAfter(item.find('.item_icon'));
+                .insertBefore(item.find('.item_link'));
         };
     }
 
