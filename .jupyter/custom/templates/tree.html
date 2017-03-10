@@ -26,7 +26,7 @@ data-notebook-path="{{notebook_path | urlencode}}"
                 {% endif %}
                 </ul>
               </div>
-              {% if breadcrumbs[3] and notebook_path.split('/',1)[0] != '-' %}
+              {% if notebook_path.split('/',1)[0] != '-' %}
               <div class="pull-left">
                 <div class="dynamic-buttons">
                   <button title="Duplicate selected" class="duplicate-button btn btn-default btn-xs">Duplicate</button>

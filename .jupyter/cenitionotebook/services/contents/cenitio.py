@@ -89,13 +89,16 @@ class CenitIO(LoggingConfigurable):
     content = model.get('content', None)
     origin = model.get('origin', None)
     type = model.get('type', 'notebook')
+    id = model.get('id', None)
 
     uri = '%s/setup/notebook.json' % (self.cenitio_api_base_url)
-    params = {'name': name, 'parent': parent, 'type': type}
+    params = {'name': name, 'parent': parent}
 
+    if None != type: params['type'] = type
+    if None != content: params['content'] = nbformat.writes(nbformat.from_dict(content), NBFORMAT_VERSION)
     if None != content: params['content'] = nbformat.writes(nbformat.from_dict(content), NBFORMAT_VERSION)
     if None != origin:  params['origin'] = origin
-    if not create: params['id'] = model.get('id') or self.cenit_io_get(path).get('id')
+    if None != id or create == False: params['id'] = id or self.cenit_io_get(path).get('id')
     data = self.cenit_io_send_request(uri, key, token, params, 'POST')
 
     return self.parse(key, token, data['success']['notebook'])

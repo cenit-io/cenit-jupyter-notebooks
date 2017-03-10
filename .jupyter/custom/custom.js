@@ -40,19 +40,16 @@ define(function (require, exports, module) {
         };
 
         NotebookList.prototype.cross_origin = function (e) {
-            console.log(arguments);
             var that = this,
                 origin = $(e.target).parents('li').data('origin');
 
             this.selected.forEach(function (item) {
-                if (item.type === 'notebook') {
-                    that.contents.save(item.path, {
-                        id: item.id,
-                        origin: origin
-                    }).then(function () {
-                        that.session_list.load_sessions();
-                    })
-                }
+                that.contents.save(item.path, {
+                    id: item.id,
+                    origin: origin
+                }).then(function () {
+                    that.session_list.load_sessions();
+                });
             });
         };
 
@@ -82,14 +79,14 @@ define(function (require, exports, module) {
             });
 
             // Shared is only visible when one item is selected.
-            if (checked > 0 && !anonymous && !has_read_only) {
+            if (checked > 0 && !anonymous && !has_read_only && !has_directories) {
                 $('.shared-button').css('display', 'inline-block');
             } else {
                 $('.shared-button').css('display', 'none');
             }
 
-            // Rename is only visible when one item is selected, it is not a running notebook and writable.
-            if (checked === 1 && !anonymous && !this.is_running(this.selected[0]) && !has_read_only) {
+            // Rename is only visible when one item is selected, it is writable notebook and not a running.
+            if (checked === 1 && !anonymous && !this.is_running(this.selected[0]) && !has_read_only && !has_directories) {
                 $('.rename-button').css('display', 'inline-block');
             } else {
                 $('.rename-button').css('display', 'none');
@@ -103,13 +100,13 @@ define(function (require, exports, module) {
             }
 
             // Delete is visible if one or more items are selected.
-            if (checked > 0 && !anonymous && !has_read_only && !has_directories && !has_shared) {
+            if (checked > 0 && !anonymous && !has_read_only && !has_shared) {
                 $('.delete-button').css('display', 'inline-block');
             } else {
                 $('.delete-button').css('display', 'none');
             }
 
-            // Delete is visible if one or more items are selected.
+            // New isn't visible when access is anonymous.
             if (!anonymous) {
                 $('.new-buttons').css('display', 'inline-block');
             } else {

@@ -8,6 +8,10 @@
     display: none;
 }
 
+#notebook_list div.list_item.directory input {
+    visibility: hidden;
+}
+
 .list_item:nth-child(0) {
     font-size: 30px;
 }

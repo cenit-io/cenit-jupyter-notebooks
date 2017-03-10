@@ -32,7 +32,7 @@ class ApiContentsManager(ContentsManager, CenitIO):
       model['created'] = datetime.datetime.now()
       model['format'] = 'json'
       model['mimetype'] = None
-      model['writable'] = False
+      model['writable'] = True
       model['type'] = 'directory'
       model['content'] = self.cenit_io_all(path)
     else:
@@ -84,8 +84,12 @@ class ApiContentsManager(ContentsManager, CenitIO):
     self.log.debug('CHECKING DIRECTORY EXISTENCE: %s' % (path))
     #################################################
     try:
-      notebook = self.cenit_io_get(path, False)
-      result = (notebook != None and notebook.get('type') == 'directory')
+      key, token, path_without_tokens, parent, name = self.parse_notebook_path(path)
+      if name != '':
+        notebook = self.cenit_io_get(path, False)
+        result = (notebook != None and notebook.get('type') == 'directory')
+      else:
+        result = True
     except:
       result = False
 
@@ -100,8 +104,8 @@ class ApiContentsManager(ContentsManager, CenitIO):
     return False
 
   def new(self, model=None, path=''):
-    self.log.debug('-----------------------------------------------------: %s' % (path))
-
+    self.log.debug('NEW NOTEBOOK: %s' % (path))
+    #################################################
     path = path.strip('/')
 
     if model is None: model = {}
@@ -115,7 +119,6 @@ class ApiContentsManager(ContentsManager, CenitIO):
     return model
 
   def copy(self, from_path, to_path=None):
-    self.log.debug('-----------------------------------')
     model = self.get(from_path)
     if model == None: raise web.HTTPError(404, u'Notebook not found in path: %s' % from_path)
 
